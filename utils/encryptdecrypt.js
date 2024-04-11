@@ -1,4 +1,5 @@
-function encrypt(text, key) {
+function encrypt(text) {
+  let key = process.env.JWT_SECRET_KEY
   let encryptedText = "";
   for (let i = 0; i < text.length; i++) {
     let charCode = text.charCodeAt(i);
@@ -8,7 +9,8 @@ function encrypt(text, key) {
   return encryptedText;
 }
 
-function decrypt(encryptedText, key) {
+function decrypt(encryptedText) {
+  let key = process.env.JWT_SECRET_KEY
   let decryptedText = "";
   for (let i = 0; i < encryptedText.length; i++) {
     let charCode = encryptedText.charCodeAt(i);
