@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 // Defining Schema
 const organizationSchema = new mongoose.Schema({
   organizationname: { type: String, required: true, trim: true },
-  adminemail: { type: String, required: true, trim: true },
+  organizationdomain: { type: String, trim: true },
+  organizationnoofproducts: { type: String, trim: true },
+  adminemail: { type: String, required: true, trim: true, unique: true },
   adminpassword: { type: String, required: true, trim: true },
   website: { type: String, trim: true },
   logo: { type: String, trim: true },
