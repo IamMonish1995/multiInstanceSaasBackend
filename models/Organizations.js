@@ -9,6 +9,8 @@ const organizationSchema = new mongoose.Schema({
   adminpassword: { type: String, required: true, trim: true },
   website: { type: String, trim: true },
   logo: { type: String, trim: true },
+  credits: { type: Number, trim: true, default: 0 },
+  activePlan: { type: String, trim: true ,default: "free"},
   createdAt: {
     type: Date,
     default: Date.now,
