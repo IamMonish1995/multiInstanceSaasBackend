@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { decryptJSON } from '../utils/encryptdecrypt.js'
 
 var checkUserAuth = async (req, res, next) => {
   let token
@@ -9,12 +10,15 @@ var checkUserAuth = async (req, res, next) => {
       token = authorization.split(' ')[1]
       // Verify Token
       const data = jwt.verify(token, process.env.JWT_SECRET_KEY)
-
-      // Get User from Token
-      // req.user = await UserModel.findById(user.userID).select('-password')
-
+      const organizationData = decryptJSON(
+        data.data,
+        process.env.JWT_SECRET_KEY
+      )
+      // Get Data from Token
+      req.organizationData = organizationData
       next()
     } catch (error) {
+      console.log(error);
       res.status(401).send({ "status": "failed", "message": "Unauthorized User" })
     }
   }

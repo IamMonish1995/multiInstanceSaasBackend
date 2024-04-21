@@ -25,13 +25,12 @@ class OrganizationsController {
       if (organizationname && adminemail && adminpassword) {
         const organization = await OrganizationModel.findOne({ adminemail });
         if (organization) {
-          // res.send({ status: "failed", message: "Email already exists" });
           this.loginOrganization(req, res);
         } else {
           const salt = await bcrypt.genSalt(10);
           const hashPassword = await bcrypt.hash(adminpassword, salt);
           saveOrganizationModel({
-            organizationname,
+            name: organizationname,
             adminemail,
             adminpassword: hashPassword,
             website,
@@ -50,7 +49,6 @@ class OrganizationsController {
               res.cookie("token", token, { httpOnly: true });
               res.cookie("authenticated", true, { httpOnly: true });
               sendResult(res, token, "Logged in");
-              // res.redirect("/dashboard"); // Redirect to dashboard
             })
             .catch((error) => {
               sendError(res, error, "Something Went Wrong");
@@ -87,7 +85,6 @@ class OrganizationsController {
             res.cookie("token", token, { httpOnly: true });
             res.cookie("authenticated", true, { httpOnly: true });
             sendResult(res, token, "Logged in");
-            // res.redirect("/dashboard"); // Redirect to dashboard
           } else {
             res.send({
               status: "failed",
