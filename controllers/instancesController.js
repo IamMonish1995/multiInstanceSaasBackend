@@ -6,7 +6,7 @@ import {
   getAllInstancesModelByProjectId,
   saveInstancesModel,
 } from "../models/Instances.js";
-import { createVercelProject } from "./vercelapicalls.js";
+import { createVercelProject, deployVercelProject } from "./vercelapicalls.js";
 import { getProjectModelById } from "../models/Projects.js";
 import { extractOwnerAndRepoName } from "../utils/repoextraction.js";
 dotenv.config();
@@ -29,7 +29,9 @@ class InstancesController {
                   projectData.gitsourcebeurl
                 );
                 const dataSetBEProject = {
-                  name: name + "-" + projectData.name,
+                  name: (name + "-" + projectData.name)
+                    .replace(/\s+/g, "")
+                    .toLowerCase(),
                   gitRepository: {
                     repo: ownerName + "/" + repoName,
                     type: projectData.gitsourcetype,
@@ -45,23 +47,30 @@ class InstancesController {
                     },
                   ],
                 };
-                const backendProject = await createVercelProject(
-                  dataSetBEProject
+                await createVercelProject(dataSetBEProject).then(
+                  async (backendProject) => {
+                    console.log({backendProject});
+                    if (backendProject.id) {
+                      const dataSetBEDeployment = {
+                        name: "instant-deployment",
+                        project: backendProject.id,
+                        target: "production", // Specify the target environment
+                        gitSource: {
+                          owner: ownerName,
+                          repo: repoName,
+                          ref: "main",
+                          type: projectData.gitsourcetype,
+                          repoId: backendProject.link.repoId,
+                        },
+                      };
+                      await deployVercelProject(dataSetBEDeployment).then(
+                        (backendProjectDeploy) => {
+                          console.log({ backendProjectDeploy });
+                        });
+                    }
+                  }
                 );
-                console.log({ backendProject });
-                // const dataSetBEDeployment = {
-                //   name: "instant-deployment",
-                //   project: "prj_D69ATB0inM2xBNhFwUloo8GlgY58",
-                //   target: "production", // Specify the target environment
-                //   gitSource: {
-                //     owner: ownerName,
-                //     repo: repoName,
-                //     ref: "main",
-                //     type: projectData.gitsourcetype,
-                //     repoId: 768297305,
-                //   },
-                // };
-                // await createProjectAndDeployProject(data).then((res) => {});
+                
               } else {
                 // only frontend project
               }
@@ -69,6 +78,7 @@ class InstancesController {
               sendResult(res, response, "Record Saved");
             })
             .catch((error) => {
+              console.log(error);
               sendError(res, error, "Something Went Wrong");
             });
         } else {
