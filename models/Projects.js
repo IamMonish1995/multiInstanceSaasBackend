@@ -11,8 +11,24 @@ const projectSchema = new mongoose.Schema({
   },
   gitsourcefeurl: { type: String, required: true, trim: true },
   feframework: { type: String, required: true, trim: true },
+  feenv: [
+    {
+      type: { type: String, default: "plain", trim: true },
+      key: { type: String, trim: true },
+      target: { type: String, trim: true },
+      value: { type: String, trim: true },
+    },
+  ],
   gitsourcebeurl: { type: String, trim: true },
   beframework: { type: String, trim: true },
+  beenv: [
+    {
+      type: { type: String, default: "plain", trim: true },
+      key: { type: String, trim: true },
+      target: { type: String, trim: true },
+      value: { type: String, trim: true },
+    },
+  ],
   gitsourcetype: { type: String, required: true, trim: true },
   creditneeded: { type: String, trim: true, default: 0 },
   updatedAt: {
@@ -62,7 +78,7 @@ export const getAllProjectsByOrgIdModal = (orgid) => {
 export const getProjectModelById = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const docs = ProjectsModel.findOne({ _id:id });
+      const docs = ProjectsModel.findOne({ _id: id });
       resolve(docs);
     } catch (error) {
       reject(error);

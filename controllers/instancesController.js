@@ -39,6 +39,7 @@ class InstancesController {
                     type: projectData.gitsourcetype,
                   },
                   environmentVariables: [
+                    ...projectData?.beenv,
                     {
                       type: "plain",
                       key: "database_name",
@@ -112,6 +113,7 @@ class InstancesController {
                               },
                               framework: projectData.feframework,
                               environmentVariables: [
+                                ...projectData.feenv,
                                 {
                                   type: "plain",
                                   key: "base_url",
@@ -190,7 +192,7 @@ class InstancesController {
               } else {
                 // only frontend project
               }
-              let finalResponse = await getInstanceModelById(response._id)
+              let finalResponse = await getInstanceModelById(response._id);
               sendResult(res, finalResponse, "Record Saved");
             })
             .catch((error) => {
