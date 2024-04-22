@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import {
   getAllInstancesModel,
   getAllInstancesModelByProjectId,
+  getInstanceModelById,
   saveInstancesModel,
+  updateInstancesModel,
 } from "../models/Instances.js";
 import { createVercelProject, deployVercelProject } from "./vercelapicalls.js";
 import { getProjectModelById } from "../models/Projects.js";
@@ -29,7 +31,7 @@ class InstancesController {
                   projectData.gitsourcebeurl
                 );
                 const dataSetBEProject = {
-                  name: (name + "-" + projectData.name)
+                  name: (name + "-" + projectData.name + "-" + "backend")
                     .replace(/\s+/g, "")
                     .toLowerCase(),
                   gitRepository: {
@@ -47,10 +49,26 @@ class InstancesController {
                     },
                   ],
                 };
+                // backend project created
                 await createVercelProject(dataSetBEProject).then(
                   async (backendProject) => {
-                    console.log({backendProject});
                     if (backendProject.id) {
+                      let updatedData = {
+                        plateformprojectbeid: backendProject.id,
+                        beurl: (
+                          "https://" +
+                          name +
+                          "-" +
+                          projectData.name +
+                          "-" +
+                          "backend.vercel.app"
+                        ).toLowerCase(),
+                        creditcharged: projectData.creditneeded,
+                        status: "becreated",
+                        plateformgitberepoid: backendProject.link.repoId,
+                      };
+                      updateInstancesModel(response._id, updatedData);
+
                       const dataSetBEDeployment = {
                         name: "instant-deployment",
                         project: backendProject.id,
@@ -63,19 +81,117 @@ class InstancesController {
                           repoId: backendProject.link.repoId,
                         },
                       };
+                      // backend project deploy
                       await deployVercelProject(dataSetBEDeployment).then(
-                        (backendProjectDeploy) => {
-                          console.log({ backendProjectDeploy });
-                        });
+                        async (backendProjectDeploy) => {
+                          if (backendProjectDeploy.id) {
+                            let updatedData = {
+                              plateformdeploymentbeid: backendProjectDeploy.id,
+                              status: "bedeployed",
+                            };
+                            updateInstancesModel(response._id, updatedData);
+
+                            // frontend project
+                            const { ownerName, repoName } =
+                              extractOwnerAndRepoName(
+                                projectData.gitsourcefeurl
+                              );
+                            const dataSetFEProject = {
+                              name: (
+                                name +
+                                "-" +
+                                projectData.name +
+                                "-" +
+                                "frontend"
+                              )
+                                .replace(/\s+/g, "")
+                                .toLowerCase(),
+                              gitRepository: {
+                                repo: ownerName + "/" + repoName,
+                                type: projectData.gitsourcetype,
+                              },
+                              framework: projectData.feframework,
+                              environmentVariables: [
+                                {
+                                  type: "plain",
+                                  key: "base_url",
+                                  target: "production",
+                                  value: (
+                                    "https://" +
+                                    name +
+                                    "-" +
+                                    projectData.name +
+                                    "-" +
+                                    "backend.vercel.app"
+                                  ).toLowerCase(),
+                                },
+                              ],
+                            };
+                            // project Created
+                            await createVercelProject(dataSetFEProject).then(
+                              async (frontendProject) => {
+                                if (frontendProject.id) {
+                                  let updatedData = {
+                                    plateformprojectfeid: frontendProject.id,
+                                    feurl: (
+                                      "https://" +
+                                      name +
+                                      "-" +
+                                      projectData.name +
+                                      "-" +
+                                      "frontend.vercel.app"
+                                    ).toLowerCase(),
+                                    status: "fecreated",
+                                    plateformgitrepofeid:
+                                      frontendProject.link.repoId,
+                                  };
+                                  updateInstancesModel(
+                                    response._id,
+                                    updatedData
+                                  );
+
+                                  const dataSetFEDeployment = {
+                                    name: "instant-deployment",
+                                    project: frontendProject.id,
+                                    target: "production", // Specify the target environment
+                                    gitSource: {
+                                      owner: ownerName,
+                                      repo: repoName,
+                                      ref: "main",
+                                      type: projectData.gitsourcetype,
+                                      repoId: frontendProject.link.repoId,
+                                    },
+                                  };
+                                  // frontend project deployed
+                                  await deployVercelProject(
+                                    dataSetFEDeployment
+                                  ).then((frontendProjectDeploy) => {
+                                    if (frontendProjectDeploy.id) {
+                                      let updatedData = {
+                                        plateformdeploymentfeid:
+                                          frontendProjectDeploy.id,
+                                        status: "fedeployed",
+                                      };
+                                      updateInstancesModel(
+                                        response._id,
+                                        updatedData
+                                      );
+                                    }
+                                  });
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
                     }
                   }
                 );
-                
               } else {
                 // only frontend project
               }
-
-              sendResult(res, response, "Record Saved");
+              let finalResponse = await getInstanceModelById(response._id)
+              sendResult(res, finalResponse, "Record Saved");
             })
             .catch((error) => {
               console.log(error);
