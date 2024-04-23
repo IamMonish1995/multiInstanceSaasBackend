@@ -15,7 +15,7 @@ const projectSchema = new mongoose.Schema({
     {
       type: { type: String, default: "plain", trim: true },
       key: { type: String, trim: true },
-      target: { type: String, trim: true },
+      target: { type: String, default: "production", trim: true },
       value: { type: String, trim: true },
     },
   ],
@@ -25,7 +25,7 @@ const projectSchema = new mongoose.Schema({
     {
       type: { type: String, default: "plain", trim: true },
       key: { type: String, trim: true },
-      target: { type: String, trim: true },
+      target: { type: String, default: "production", trim: true },
       value: { type: String, trim: true },
     },
   ],

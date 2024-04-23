@@ -16,6 +16,8 @@ class ProjectsController {
         feframework,
         gitsourcebeurl,
         beframework,
+        feenv,
+        beenv,
         gitsourcetype,
         creditneeded
       } = req.body;
@@ -29,7 +31,9 @@ class ProjectsController {
           gitsourcebeurl,
           beframework,
           gitsourcetype,
-          creditneeded
+          creditneeded,
+          feenv,
+          beenv,
         })
           .then(async (response) => {
             sendResult(res, response, "Record Saved");
