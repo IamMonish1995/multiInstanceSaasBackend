@@ -71,10 +71,10 @@ class ProjectsController {
     }
   };
   static getAllProjectsByOrgId = async (req, res) => {
-    const { orgid } = req.query;
+    const { _id } = req.organizationData;
     console.log("get all Instances called");
     try {
-      getAllProjectsByOrgIdModal(orgid)
+      getAllProjectsByOrgIdModal(_id)
         .then((result) => {
           sendResult(res, result, "Data retrived");
         })
