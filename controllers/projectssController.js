@@ -1,7 +1,7 @@
 import { sendError, sendResult } from "../constant/HttpResponse.js";
 
 import dotenv from "dotenv";
-import { getAllProjectsByOrgIdModal, getAllProjectsModel, saveProjectsModel } from "../models/Projects.js";
+import { deleteProjectsModel, getAllProjectsByOrgIdModal, getAllProjectsModel, saveProjectsModel } from "../models/Projects.js";
 dotenv.config();
 
 class ProjectsController {
@@ -45,6 +45,34 @@ class ProjectsController {
         sendError(
           res,
           "Project-Name,Organization,gitsourcefeurl,feframework and gitsourcetype are a required parameter",
+          "Something Went Wrong"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      sendError(res, error, "Something Went Wrong");
+    }
+  };
+  static deleteProject = async (req, res) => {
+    console.log("Delete Project called");
+    try {
+      const {
+        projectID
+      } = req.body;
+      if (projectID) {
+        deleteProjectsModel({
+          projectID
+        })
+          .then(async (response) => {
+            sendResult(res, response, "Record Deleted");
+          })
+          .catch((error) => {
+            sendError(res, error, "Something Went Wrong");
+          });
+      } else {
+        sendError(
+          res,
+          "projectID is a required parameter",
           "Something Went Wrong"
         );
       }

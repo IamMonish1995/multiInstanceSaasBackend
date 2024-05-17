@@ -10,6 +10,8 @@ const InstancesSchema = new mongoose.Schema({
   },
   plateformprojectbeid: { type: String, trim: true },
   plateformdeploymentbeid: { type: String, trim: true },
+  plateformprojectfeid: { type: String, trim: true },
+  plateformdeploymentfeid: { type: String, trim: true },
   plateformgitberepoid: { type: String, trim: true },
   plateformgitferepoid: { type: String, trim: true },
   feurl: { type: String, trim: true },
@@ -26,6 +28,18 @@ const InstancesSchema = new mongoose.Schema({
 // Model
 const InstancesModel = mongoose.model("instances", InstancesSchema);
 // save
+export const deleteInstancesModel = ({instanceId}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const delete_document = await InstancesModel.deleteOne({
+        _id: instanceId,
+      });
+      resolve(delete_document);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 export const saveInstancesModel = (data) => {
   return new Promise(async (resolve, reject) => {
     try {

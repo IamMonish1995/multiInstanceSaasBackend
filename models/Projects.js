@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import InstancesModel from "./Instances.js";
 
 // Defining Schema
 const projectSchema = new mongoose.Schema({
@@ -44,6 +45,26 @@ const projectSchema = new mongoose.Schema({
 // Model
 const ProjectsModel = mongoose.model("projects", projectSchema);
 // save
+export const deleteProjectsModel = ({ projectID }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const delete_instance = await InstancesModel.deleteMany({
+        projectid: projectID,
+      })
+        .then(async (res) => {
+          const delete_document = await ProjectsModel.deleteOne({
+            _id: projectID,
+          });
+          resolve(delete_document);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 export const saveProjectsModel = (data) => {
   return new Promise(async (resolve, reject) => {
     try {

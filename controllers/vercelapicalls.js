@@ -33,6 +33,34 @@ export async function createVercelProject(data) {
     }
   });
 }
+export async function deleteVercelProject(data) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${vercelToken}`,
+        },
+      };
+      axios
+        .delete(
+          `https://api.vercel.com/v9/projects/${data}`,
+          data,
+          config
+        )
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject("Failed to delete project in Vercel");
+          console.error(error);
+        });
+    } catch (error) {
+      console.error("Error creating project and deploying:", error.message);
+      reject("Failed to create project in Vercel2");
+    }
+  });
+}
 export async function deployVercelProject(data) {
   return new Promise(async (resolve, reject) => {
     try {

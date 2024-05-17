@@ -2,13 +2,18 @@ import { sendError, sendResult } from "../constant/HttpResponse.js";
 
 import dotenv from "dotenv";
 import {
+  deleteInstancesModel,
   getAllInstancesModel,
   getAllInstancesModelByProjectId,
   getInstanceModelById,
   saveInstancesModel,
   updateInstancesModel,
 } from "../models/Instances.js";
-import { createVercelProject, deployVercelProject } from "./vercelapicalls.js";
+import {
+  createVercelProject,
+  deleteVercelProject,
+  deployVercelProject,
+} from "./vercelapicalls.js";
 import { getProjectModelById } from "../models/Projects.js";
 import { extractOwnerAndRepoName } from "../utils/repoextraction.js";
 dotenv.config();
@@ -213,6 +218,31 @@ class InstancesController {
           "Instance-Name and Project are a required parameter",
           "Something Went Wrong"
         );
+      }
+    } catch (error) {
+      console.log(error);
+      sendError(res, error, "Something Went Wrong");
+    }
+  };
+  static deleteInstance = async (req, res) => {
+    console.log("delete instance called");
+    try {
+      const { instanceID } = req.body;
+      const instanceData = await getInstanceModelById(instanceID);
+      if (instanceData) {
+        await deleteVercelProject(instanceData.plateformprojectbeid);
+        await deleteVercelProject(instanceData.plateformprojectfeid);
+
+        deleteInstancesModel({
+          instanceID,
+        })
+          .then(async (response) => {
+            sendResult(res, response, "Record deleted");
+          })
+          .catch((error) => {
+            console.log(error);
+            sendError(res, error, "Something Went Wrong");
+          });
       }
     } catch (error) {
       console.log(error);

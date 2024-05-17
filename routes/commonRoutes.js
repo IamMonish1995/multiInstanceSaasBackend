@@ -19,6 +19,7 @@ router.get(
 );
 // projects
 router.post("/createproject", checkUserAuth, ProjectsController.saveProject);
+router.delete("/deleteproject", checkUserAuth, ProjectsController.deleteProject);
 router.get("/getallprojects", checkUserAuth, ProjectsController.getAllProjects);
 router.get(
   "/getprojecsbyorgid",
@@ -27,6 +28,7 @@ router.get(
 );
 // instances
 router.post("/createinstance", checkUserAuth, InstancesController.saveInstance);
+router.delete("/deleteinstance", checkUserAuth, InstancesController.deleteInstance);
 router.get(
   "/getallinstances",
   checkUserAuth,
