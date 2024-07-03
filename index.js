@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/connectdb.js";
 import commonRoutes from "./routes/commonRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import bodyParser from "body-parser";
 import path from "path";
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", commonRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

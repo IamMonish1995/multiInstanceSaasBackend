@@ -1,10 +1,10 @@
 import db from "../schema/db.js";
 
 // save
-export const saveOrganizationUsersModel = (data) => {
+export const saveClientUsersModel = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const doc = new db.OrganizationUsersModel(data);
+      const doc = new db.ClientUsersModel(data);
       const saved_document = await doc.save();
       resolve(saved_document);
     } catch (error) {
@@ -12,10 +12,10 @@ export const saveOrganizationUsersModel = (data) => {
     }
   });
 };
-export const getAllOrganizationUsersModel = () => {
+export const getAllClientUsersModel = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const docs = db.OrganizationUsersModel.find();
+      const docs = db.ClientUsersModel.find();
       resolve(docs);
     } catch (error) {
       reject(error);

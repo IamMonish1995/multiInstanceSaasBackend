@@ -10,12 +10,12 @@ var checkUserAuth = async (req, res, next) => {
       token = authorization.split(' ')[1]
       // Verify Token
       const data = jwt.verify(token, process.env.JWT_SECRET_KEY)
-      const organizationData = decryptJSON(
+      const userData = decryptJSON(
         data.data,
         process.env.JWT_SECRET_KEY
       )
       // Get Data from Token
-      req.organizationData = organizationData
+      req.userData = userData
       next()
     } catch (error) {
       console.log(error);
