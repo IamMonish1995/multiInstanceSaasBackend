@@ -25,6 +25,11 @@ const SystemUserSchema = new mongoose.Schema({
     ref: "Status",
     required: false,
   },
+  created_by_user_id:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: false,
+  }
 });
 
 // Model

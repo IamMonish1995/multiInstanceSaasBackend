@@ -26,7 +26,7 @@ const InstancesSchema = new mongoose.Schema({
   created_by_user_id:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
-    required: true,
+    required: false,
   }
 });
 
