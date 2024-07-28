@@ -12,6 +12,36 @@ export const CreateUserAccess = (data) => {
     }
   });
 };
+
+export const FindUserAccess = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docs = db.UserAccessModal.findOne(data);
+      resolve(docs);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+export const FindUserAccessList = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docs = db.UserAccessModal.find(data).populate({
+        path: "role_id",
+        model: db.RolesModal,
+        select: "role_name ",
+      }).populate({
+        path: "menu_id",
+        model: db.MenusModal,
+        select: "menu_name ",
+      });
+      resolve(docs);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 export const getAllUserAccess = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -26,7 +56,9 @@ export const getAllUserAccess = () => {
 
 const UserAccessFunctions = {
   CreateUserAccess,
-  getAllUserAccess
+  getAllUserAccess,
+  FindUserAccess,
+  FindUserAccessList
 };
 
 export default UserAccessFunctions;

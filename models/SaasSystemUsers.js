@@ -27,6 +27,24 @@ export const getAllSystemUsers = () => {
     }
   });
 };
+export const getSystemUsersList = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docs = db.SystemUsersModel.find(data).populate({
+        path: "role_id",
+        model: db.RolesModal,
+        select: "role_name ",
+      }).populate({
+        path: "status_id",
+        model: db.StatusModal,
+        select: "status_name",
+      });
+      resolve(docs);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 export const CreateSystemAdmin = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -71,6 +89,7 @@ const SystemUsersFunctions = {
   CreateSystemAdmin,
   CreateSystemGuest,
   CreateSystemUser,
+  getSystemUsersList
 };
 
 export default SystemUsersFunctions;

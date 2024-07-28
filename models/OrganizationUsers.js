@@ -22,3 +22,33 @@ export const getAllOrganizationUsersModel = () => {
     }
   });
 };
+export const getOrganizationUsersList = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docs = db.OrganizationUsersModel.find(data).populate({
+        path: "role_id",
+        model: db.RolesModal,
+        select: "role_name ",
+      }).populate({
+        path: "org_id",
+        model: db.OrganizationModel,
+        select: "name ",
+      }).populate({
+        path: "status_id",
+        model: db.StatusModal,
+        select: "status_name",
+      });
+      resolve(docs);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const OrganizationUsersFunctions = {
+  saveOrganizationUsersModel,
+  getAllOrganizationUsersModel,
+  getOrganizationUsersList
+};
+
+export default OrganizationUsersFunctions;
