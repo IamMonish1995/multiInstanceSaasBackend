@@ -12,7 +12,7 @@ var checkUserAuth = async (req, res, next) => {
       const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
       decryptJSON(data.data).then((userData) => {
         // Get Data from Token
-        req.body.userData = userData;
+        req.body.user_data = userData;
         next();
       });
     } catch (error) {

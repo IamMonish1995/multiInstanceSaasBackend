@@ -5,6 +5,7 @@ import cors from "cors";
 import connectDB from "./config/connectdb.js";
 import commonRoutes from "./routes/commonRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import orgRoutes from "./routes/orgRoutes.js";
 import devRoutes from "./routes/devRoutes.js";
 import bodyParser from "body-parser";
 import path from "path";
@@ -33,9 +34,10 @@ app.get("/", (req, res) => {
   res.send("working");
 });
 
+app.use("/dev", devRoutes);
 app.use("/api", commonRoutes);
 app.use("/auth", authRoutes);
-app.use("/dev", devRoutes);
+app.use("/org", orgRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
