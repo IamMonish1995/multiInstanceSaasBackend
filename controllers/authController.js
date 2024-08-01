@@ -17,7 +17,7 @@ const expirationTime =
 class AuthController {
   static getUser = async (req, res) => {
     const { external_user_id } = req.body;
-    await decryptJSON(external_user_id)
+     decryptJSON(external_user_id)
       .then(async (decrypted_external_user_id) => {
         try {
           let user;
@@ -79,15 +79,20 @@ class AuthController {
   };
   static getProfileConfig = async (req, res) => {
     const { external_role_id } = req.body;
-    const decrypted_external_role_id = decryptJSON(external_role_id);
-    try {
-      let access = await UserAccessFunctions.FindUserAccessList({
-        role_id: decrypted_external_role_id,
+     decryptJSON(external_role_id)
+      .then(async (decrypted_external_role_id) => {
+                try {
+          let access = await UserAccessFunctions.FindUserAccessList({
+            role_id: decrypted_external_role_id,
+          });
+          sendResult(res, access, "Fetch Config");
+        } catch (error) {
+          sendError(res, error.message, "Fetch Config Failed");
+        }
+      })
+      .catch((error) => {
+        sendError(res, error, "Invalid Data");
       });
-      sendResult(res, access, "Fetch Config");
-    } catch (error) {
-      sendError(res, error.message, "Fetch Config Failed");
-    }
   };
 
   static InitiatSetupWizard = async (req, res) => {
