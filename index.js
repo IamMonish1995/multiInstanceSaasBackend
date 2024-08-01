@@ -6,6 +6,7 @@ import connectDB from "./config/connectdb.js";
 import commonRoutes from "./routes/commonRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orgRoutes from "./routes/orgRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
 import devRoutes from "./routes/devRoutes.js";
 import bodyParser from "body-parser";
 import path from "path";
@@ -38,6 +39,7 @@ app.use("/dev", devRoutes);
 app.use("/api", commonRoutes);
 app.use("/auth", authRoutes);
 app.use("/org", orgRoutes);
+app.use("/client", clientRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
