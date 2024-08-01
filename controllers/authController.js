@@ -63,12 +63,17 @@ class AuthController {
             organizationProfiles,
             clientProfiles,
           };
-          const token = jwt.sign(
-            { data: { user, userProfiles } },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: expirationTime }
-          );
-          sendResult(res, token, "Logged in");
+          encryptJSON({ user, userProfiles }).then((encrypteddata)=>{
+            const token = jwt.sign(
+              { data: encrypteddata },
+              process.env.JWT_SECRET_KEY,
+              { expiresIn: expirationTime }
+            );
+            sendResult(res, token, "Logged in");
+          }).catch((err)=>{
+            sendError(res, err, "Loggin Failed");
+          })
+
         } catch (error) {
           sendError(res, error.message, "Loggin Failed");
         }
