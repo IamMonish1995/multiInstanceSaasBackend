@@ -13,7 +13,7 @@ class ClientsController {
       const {
         client_name,
         org_id,
-        credits_balance,
+        credits,
         payment_gateway_key,
         payment_gateway_secret,
         user_data,
@@ -32,7 +32,7 @@ class ClientsController {
           ClientsFunctions.CreateClient({
             client_name,
             org_id,
-            credits_balance,    
+            credits,    
             payment_gateway_key,
             payment_gateway_secret,
             created_by_user_id: user_data.user._id,

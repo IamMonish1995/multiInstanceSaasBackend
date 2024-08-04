@@ -7,7 +7,7 @@ const ClientSchema = new mongoose.Schema({
     ref: "Organizations",
     required: true,
   },
-  credits_balance: { type: Number, default: 0 },
+  credits: { type: Number, default: 0 },
   payment_gateway_key: { type: String },
   payment_gateway_secret: { type: String },
   created_at: { type: Date, default: Date.now },
