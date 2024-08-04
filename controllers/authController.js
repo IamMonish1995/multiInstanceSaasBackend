@@ -9,6 +9,8 @@ import { InitiatSetupWizard } from "../models/SetupWizard.js";
 import OrganizationUsersFunctions from "../models/OrganizationUsers.js";
 import ClientUsersFunctions from "../models/ClientUsers.js";
 import UserAccessFunctions from "../models/UserAccess.js";
+import MenusFunctions from "../models/Menus.js";
+import rolesFunctions from "../models/Roles.js";
 dotenv.config();
 
 const expirationTime =
@@ -104,6 +106,24 @@ class AuthController {
     try {
       await InitiatSetupWizard();
       sendResult(res, {}, "Imported data Successfully");
+    } catch (error) {
+      sendError(res, error.message, "Failed");
+    }
+  };
+  static getAllMenus = async (req, res) => {
+    try {
+       MenusFunctions.getAllMenus().then((menus)=>{
+        sendResult(res, menus, "Fetched data Successfully");
+      });
+    } catch (error) {
+      sendError(res, error.message, "Failed");
+    }
+  };
+  static getAllRoles = async (req, res) => {
+    try {
+      rolesFunctions.getAllRoles().then((roles)=>{
+        sendResult(res, roles, "Fetched data Successfully");
+      });
     } catch (error) {
       sendError(res, error.message, "Failed");
     }

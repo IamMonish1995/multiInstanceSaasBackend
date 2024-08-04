@@ -13,4 +13,17 @@ router.post(
   AuthController.getProfileConfig
 ); // get profile config
 
+router.get(
+  "/getAllMenus",
+  AuthController.getAllMenus
+); // get profile config
+router.get(
+  "/getAllRoles",
+  AuthController.getAllRoles
+); // get profile config
+
+
+
+
+
 export default router;
