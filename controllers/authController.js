@@ -19,7 +19,7 @@ const expirationTime =
 class AuthController {
   static getUser = async (req, res) => {
     const { external_user_id } = req.body;
-     decryptJSON(external_user_id)
+    decryptJSON(external_user_id)
       .then(async (decrypted_external_user_id) => {
         try {
           let user;
@@ -65,17 +65,18 @@ class AuthController {
             organizationProfiles,
             clientProfiles,
           };
-          encryptJSON({ user, userProfiles }).then((encrypteddata)=>{
-            const token = jwt.sign(
-              { data: encrypteddata },
-              process.env.JWT_SECRET_KEY,
-              { expiresIn: expirationTime }
-            );
-            sendResult(res, token, "Logged in");
-          }).catch((err)=>{
-            sendError(res, err, "Loggin Failed");
-          })
-
+          encryptJSON({ user, userProfiles })
+            .then((encrypteddata) => {
+              const token = jwt.sign(
+                { data: encrypteddata },
+                process.env.JWT_SECRET_KEY,
+                { expiresIn: expirationTime }
+              );
+              sendResult(res, token, "Logged in");
+            })
+            .catch((err) => {
+              sendError(res, err, "Loggin Failed");
+            });
         } catch (error) {
           sendError(res, error.message, "Loggin Failed");
         }
@@ -86,9 +87,9 @@ class AuthController {
   };
   static getProfileConfig = async (req, res) => {
     const { external_role_id } = req.body;
-     decryptJSON(external_role_id)
+    decryptJSON(external_role_id)
       .then(async (decrypted_external_role_id) => {
-                try {
+        try {
           let access = await UserAccessFunctions.FindUserAccessList({
             role_id: decrypted_external_role_id,
           });
@@ -112,7 +113,7 @@ class AuthController {
   };
   static getAllMenus = async (req, res) => {
     try {
-       MenusFunctions.getAllMenus().then((menus)=>{
+      MenusFunctions.getAllMenus().then((menus) => {
         sendResult(res, menus, "Fetched data Successfully");
       });
     } catch (error) {
@@ -121,9 +122,51 @@ class AuthController {
   };
   static getAllRoles = async (req, res) => {
     try {
-      rolesFunctions.getAllRoles().then((roles)=>{
+      rolesFunctions.getAllRoles().then((roles) => {
         sendResult(res, roles, "Fetched data Successfully");
       });
+    } catch (error) {
+      sendError(res, error.message, "Failed");
+    }
+  };
+  static saveNewRole = async (req, res) => {
+    try {
+      const { name, assessList } = req.body;
+      // save new role
+      rolesFunctions.CreateRole({ role_name: name }).then(async (role) => {
+        // save multiple access
+        await UserAccessFunctions.CreateMultipleUserAccess(
+          role._id,
+          assessList
+        );
+        sendResult(res, role, "Role Saved Successfully");
+      });
+    } catch (error) {
+      sendError(res, error.message, "Failed");
+    }
+  };
+  static updateRole = async (req, res) => {
+    try {
+      const { assessList, role_id, name } = req.body;
+      // update role
+   const role = await rolesFunctions.UpdateRole(role_id,name)
+      // save delete old access
+      await UserAccessFunctions.DeleteMultipleUserAccess(role_id)
+      // add new access
+      await UserAccessFunctions.CreateMultipleUserAccess(role_id,assessList);
+      sendResult(res, role, "Role Saved Successfully");
+    } catch (error) {
+      sendError(res, error.message, "Failed");
+    }
+  };
+  static deleteRole = async (req, res) => {
+    try {
+      const { role_id} = req.body;
+      // save delete all access
+      await UserAccessFunctions.DeleteMultipleUserAccess(role_id)
+      // delete role
+      const role = await rolesFunctions.DeleteRole(role_id)
+      sendResult(res, role, "Role Saved Successfully");
     } catch (error) {
       sendError(res, error.message, "Failed");
     }

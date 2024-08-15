@@ -22,6 +22,22 @@ router.get(
   AuthController.getAllRoles
 ); // get profile config
 
+router.post(
+  "/saveNewRole",
+  checkUserAuth,
+  AuthController.saveNewRole
+); // create role
+
+router.post(
+  "/updateRole",
+  checkUserAuth,
+  AuthController.updateRole
+); // create role
+router.post(
+  "/deleteRole",
+  checkUserAuth,
+  AuthController.deleteRole
+); // create role
 
 
 
