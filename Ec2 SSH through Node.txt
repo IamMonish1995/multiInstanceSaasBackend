@@ -1,0 +1,16 @@
+
+      let region = "us-east-1";
+      let accessKeyId = process.env.ACCESSKEY;
+      let secretAccessKey = process.env.SECRETACCESSKEY;
+      let InstanceId = "i-0d26730ea086bcc2f";
+      // ssh username
+      let username = "ubuntu";
+      privateKey: fs.readFileSync("./workspace.pem"),
+
+	
+install docker
+	sudo apt update -y && 
+        sudo apt install -y docker.io &&
+        sudo service docker start &&
+        sudo docker run hello-world
+
